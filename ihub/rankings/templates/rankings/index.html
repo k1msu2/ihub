@@ -1,5 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <h1>index for rankings</h1>
 
+    <table class="table">
+    <tr>
+        <th>rank</th>
+        <th>API</th>
+    </tr>
+        
+    {% for api in result %}
+    <tr>
+        <td>{{ api.api_rank }}</td>
+        <td><a href="{{ api.api_url }}">{{ api.api_name }}</a></td>
+    </tr>
+    {% endfor %}
+    </table>
 {% endblock  %}
