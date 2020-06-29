@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .models import Api
+from accounts.models import Api
 # Create your views here.
 
 
 def index(request):
     apis = Api.objects.all()
     context = {
-        'apis' : apis
+        'apis': apis
     }
     return render(request, 'apis/index.html', context)
