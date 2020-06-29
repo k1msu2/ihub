@@ -10,5 +10,5 @@ class Api(models.Model):
     copyright = models.CharField(max_length=100)
     copyright_range = models.CharField(max_length=100)
     api_file = models.CharField(max_length=100)
-    download_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='download_apis', blank=True, null=True)
+    download_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='download_apis')
     
