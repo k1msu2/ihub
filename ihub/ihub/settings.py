@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'apis',
     'files',
     'rankings',
+    'statuses',
     'bootstrap4',
     'django.contrib.admin',
     'django.contrib.auth',

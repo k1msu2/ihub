@@ -15,7 +15,7 @@ def index(request):
     return render(request, 'apis/index.html', context)
 
 def detail(request, pk):
-    # 추후 누적값을 저장할 코드 구현 할것 
+    # 추후 누적값을 저장할 코드 구현 --> Status app (DB 저장)
     api =get_object_or_404(Api,pk=pk)
     #print(api.download_users)
     context = {
