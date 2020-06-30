@@ -6,7 +6,8 @@ url = 'http://data.seoul.go.kr/'
 
 
 def crawling():
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver = webdriver.Chrome(
+        ChromeDriverManager().install())
     driver.get(url)
     time.sleep(2)
     api_list = driver.find_elements_by_xpath(
@@ -25,4 +26,20 @@ def crawling():
         api_rank += 1
 
 
-# crawling()
+def crawling_api_inform():
+    # datasetVO > div.wrap-a > div > section > div.list-statistics > dl:nth-child(1)
+    # datasetVO > div.wrap-a > div > section > div.list-statistics > dl:nth-child(2)
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
+    options.add_argument('window-size=1920x1080')
+    options.add_argument("disable-gpu")
+    driver = webdriver.Chrome(
+        ChromeDriverManager().install(), chrome_options=options)
+    driver.get(url)
+    time.sleep(1)
+    click_api = driver.find_elements_by_css_selector(
+        '#datasetVO > div.wrap-a > div > section > div.list-statistics > dl:nth-child(1) > dt > a')
+    print(click_api)
+
+
+crawling_api_inform()
