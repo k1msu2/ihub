@@ -18,7 +18,7 @@
         console.log(showSearchDetail);
 
         showSearchDetail.addEventListener('click', function(event){
-            document.querySelector('.modal-title').innerHTML = 'api 명을 정확히 입력해주세요'
+            document.querySelector('.modal-title').innerHTML = 'API 명을 정확히 입력해주세요'
             document.querySelector('.modal-body').innerHTML = ''
             let searchString = document.querySelector('#myInput');
             console.log(searchString);
@@ -231,64 +231,65 @@ for (var i = 0; i < showDetails.length; i++) {
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script>
-    // 누적값은 로컬변수를 만들어서 해야하는지?? 디비변수로 해도 되는지..?
-    // settimer(일정한 시간 후 작업을 한번 실행) or setinterval(일정한 시간 간격으로 작업 수행)
-    //'http://openAPI.seoul.go.kr:8088/7a414542756b316d3132377954467477/xml/ChunmanAdoptedSuggestions/1/1'
-    startCheck = function(){
-        var api_status = '';
-        playCheck = setInterval(function(){
-            {% for api in apis %}
-                document.querySelector('#api{{ api.pk }}').innerHTML = '';
-                // console.log('{{ api.api_url }}');
-                // API 서버에서 상태 확인하기
-                axios.get('{{ api.api_url }}')
-                .then(response => {
-                    //console.log(response.data);
-                    parser = new DOMParser();
-                    xmlDoc = parser.parseFromString(response.data,'text/xml');
-                    status_code = xmlDoc.getElementsByTagName('CODE')[0].childNodes[0].nodeValue;
+<script>
+let api_pk = '';
+{% for api in apis %}
+console.log("1111111");
+    document.querySelector('#api{{ api.pk }}').innerHTML = '';
+    // 방법 2. DB에서 status 가져오기
+    api_pk = {{ api.pk }};
+    axios.get(`/apis/status/${api_pk}/`)
+    .then(res => {
+        let status_code = res.data.latest_status
 
-                    if(status_code == 'INFO-000'){
-                        api_status = '정상';
-                    } else if(status_code == 'INFO-100' ){
-                        api_status = '인증키오류'
-                    } else if(status_code == 'ERROR-500' ){
-                        api_status = '서버오류'
-                    } else if(status_code == 'ERROR-600'){
-                        api_status = '데이터베이스오류'
-                    } else if(status_code == 'ERROR-601'){
-                        api_status = 'SQL문장오류'
-                    } else {
-                        api_status = '비정상'
-                    }
-                    document.querySelector('#api{{ api.pk }}').innerHTML = api_status;
-
-                    //DB에 상태 저장 요청하기
-                    let api_pk = '{{ api.pk }}';
-                    axios.get(`/statuses/${api_pk}/${status_code}`)
-                    .then(res => {
-                        console.log('{{ api.api_name }}' + ' status:' + api_status +'save ' + res.data.status_check);
-                    })
-                })    
-            {% endfor %}
-        }, 20000);
-    };
-
-    stopCheck = function(){
-        clearInterval(playCheck);
-    };
-
-    var startButton = document.querySelector('#start')
-        startButton.addEventListener('click', function(event){
-        startCheck();
+            if(status_code == 'INFO-000'){
+        api_status = '정상';
+        } else if(status_code == 'INFO-100' ){
+            api_status = '인증키오류'
+        } else if(status_code == 'ERROR-500' ){
+            api_status = '서버오류'
+        } else if(status_code == 'ERROR-600'){
+            api_status = '데이터베이스오류'
+        } else if(status_code == 'ERROR-601'){
+            api_status = 'SQL문장오류'
+        } else {
+            api_status = '비정상'
+        }
+        document.querySelector('#api{{ api.pk }}').innerHTML = api_status;
     })
+    // 방법 1. 실시간 상태 점검하기
+    // console.log('{{ api.api_url }}');
+    // API 서버에서 상태 확인하기
+    {% comment %} axios.get('{{ api.api_url }}')
+    .then(response => {
+        //console.log(response.data);
+        parser = new DOMParser();
+        xmlDoc = parser.parseFromString(response.data,'text/xml');
+        status_code = xmlDoc.getElementsByTagName('CODE')[0].childNodes[0].nodeValue;
 
-    var stopButton = document.querySelector('#stop')
-        stopButton.addEventListener('click', function(event){
-        stopCheck();
-    })
+        if(status_code == 'INFO-000'){
+            api_status = '정상';
+        } else if(status_code == 'INFO-100' ){
+            api_status = '인증키오류'
+        } else if(status_code == 'ERROR-500' ){
+            api_status = '서버오류'
+        } else if(status_code == 'ERROR-600'){
+            api_status = '데이터베이스오류'
+        } else if(status_code == 'ERROR-601'){
+            api_status = 'SQL문장오류'
+        } else {
+            api_status = '비정상'
+        }
+        document.querySelector('#api{{ api.pk }}').innerHTML = api_status;
 
-  </script>
+        //DB에 상태 저장 요청하기
+        let api_pk = '{{ api.pk }}';
+        axios.get(`/statuses/${api_pk}/${status_code}`)
+        .then(res => {
+            console.log('{{ api.api_name }}' + ' status:' + api_status +'save ' + res.data.status_check);
+        })
+    })     {% endcomment %}
+{% endfor %}
+</script>
 
 {% endblock content %}

@@ -4,6 +4,7 @@ from django.http import JsonResponse
 import json
 from django.forms.models import model_to_dict
 from django.core import serializers
+from statuses.models import Status
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 
@@ -32,10 +33,20 @@ def detail(request, pk):
     return JsonResponse(context)
 
 def search(request, search_string):
-    api = get_object_or_404(Api,api_name=search_string)
+    api = get_object_or_404(Api, api_name=search_string)
     context = {
         'msg' : 'success',
         'api_pk' : api.pk
     }
     return JsonResponse(context) 
 
+def status(request, pk):
+    #status = get_object_or_404(Status, api_id=pk)
+    print('--------------')
+    latest_status = Status.objects.filter(api_id=pk).latest('updated_time')
+    print(latest_status.status)
+    context = {
+        'msg' : 'success',
+        'latest_status' : latest_status.status
+    }
+    return JsonResponse(context) 
