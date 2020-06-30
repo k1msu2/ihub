@@ -16,7 +16,7 @@ def index(request):
 
 def detail(request, pk):
     # 추후 누적값을 저장할 코드 구현 --> Status app (DB 저장)
-    api =get_object_or_404(Api,pk=pk)
+    api = get_object_or_404(Api,pk=pk)
     #print(api.download_users)
     context = {
         'msg' : 'success',
@@ -30,3 +30,12 @@ def detail(request, pk):
     }
 
     return JsonResponse(context)
+
+def search(request, search_string):
+    api = get_object_or_404(Api,api_name=search_string)
+    context = {
+        'msg' : 'success',
+        'api_pk' : api.pk
+    }
+    return JsonResponse(context) 
+
