@@ -5,8 +5,13 @@ import json
 from django.forms.models import model_to_dict
 from django.core import serializers
 from statuses.models import Status
+import os
+from django.conf import settings
+from django.http import HttpResponse, Http404
 # Create your views here.
 from django.contrib.auth.decorators import login_required
+import urllib.request
+import mimetypes
 
 def index(request):
     apis = Api.objects.all()
@@ -42,11 +47,21 @@ def search(request, search_string):
 
 def status(request, pk):
     #status = get_object_or_404(Status, api_id=pk)
-    print('--------------')
     latest_status = Status.objects.filter(api_id=pk).latest('updated_time')
-    print(latest_status.status)
+    print(latest_status.updated_time)
     context = {
         'msg' : 'success',
         'latest_status' : latest_status.status
     }
     return JsonResponse(context) 
+
+def download(request, pk):
+    api = get_object_or_404(Api, pk=pk)
+    file_path = os.path.join(settings.MEDIA_ROOT, api.api_file)
+    print(file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type=mimetypes.guess_type(file_path)[0])
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
