@@ -115,4 +115,30 @@ def crawling_api_inform():
             next_page.click()
 
 
-crawling_api_inform()
+# crawling_api_inform()
+
+def down_ranking():
+    driver = webdriver.Chrome(
+        ChromeDriverManager().install())
+    driver.get(url)
+    time.sleep(1)
+
+    # 다운로드 랭킹
+    click_download = driver.find_element_by_css_selector('#popdata_css_1_2')
+    click_download.click()
+    download_list = driver.find_elements_by_xpath(
+        '//*[@id="tabPopData2"]/ul/li/a')
+    d_result = []
+    api_rank = 1
+    for down in download_list:
+        down_name = down.find_element_by_class_name('bbs-txt').text
+        down_obj = {
+            'down_name': down_name,
+            'api_rank': api_rank,
+        }
+        d_result.append(down_obj)
+        api_rank += 1
+        print(down_name)
+
+
+down_ranking()
