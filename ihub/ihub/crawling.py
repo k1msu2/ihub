@@ -60,14 +60,13 @@ def crawling_api_inform():
 
             # json data 생성 (json_parsing)
             key = '5161444d487365683132375755766e76'
-            source_view = 'view-source:'
             url = api_url.replace('(인증키)', key)
             if url.split(sep='/')[4] == 'xml':
-                url_new = url.replace('/5/', '/1000/')
-                xml_data = urllib.request.urlopen(
-                    url_new).read().decode('utf8')
-                time.sleep(1)
                 try:
+                    url_new = url.replace('/5/', '/1000/')
+                    xml_data = urllib.request.urlopen(
+                        url_new).read().decode('utf8')
+                    time.sleep(1)
                     json_data = json.dumps(xmltodict.parse(xml_data),
                                            ensure_ascii=False, indent='\t')
                     api_status = '정상'
@@ -76,8 +75,9 @@ def crawling_api_inform():
                 with open(f'/Users/seho/Documents/GitHub/ihub/ihub/media/{api_eng}.json', 'w') as file:
                     file.write(json_data)
             else:
-                json_data = urllib.request.urlopen(url).read().decode('utf8')
                 try:
+                    json_data = urllib.request.urlopen(
+                        url).read().decode('utf8')
                     json_data_new = json.loads(json_data)
                     total = json_data_new[api_eng]["list_total_count"]
                     url_new = url.replace('/5/', f'/{total}/')
