@@ -42,6 +42,7 @@ def index(request):
     download_list = driver.find_elements_by_xpath(
         '//*[@id="tabPopData2"]/ul/li[1]/a')
     d_result = []
+    d_api_rank = 1
     for down in download_list:
         down_name = down.find_element_by_class_name('bbs-txt').text
         down_obj = {
@@ -49,10 +50,10 @@ def index(request):
             'api_rank': api_rank,
         }
         d_result.append(down_obj)
-        api_rank += 1
-        print(d_result[0].get('down_name'))
+        d_api_rank += 1
+        print(down_name)
     context = {
         'result': result,
         'd_result': d_result,
     }
-    return render(request, 'rankings/index.html', context)
+    return (request, 'rankings/index.html', context)

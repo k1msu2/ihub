@@ -8,7 +8,7 @@ import time
 
 
 def csv_parser():
-    for index in range(2, 4):
+    for index in range(7, 8):
         with open(f'/Users/seho/Documents/GitHub/ihub/ihub/media/api_urls_{index}_utf8.csv', newline='') as csvfile:
             urls_file = csv.reader(csvfile, delimiter=' ',  quotechar='|')
             for url in urls_file:
